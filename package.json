@@ -1,0 +1,32 @@
+{
+  "name": "supply-chain-platform",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build": "pnpm --filter @supply-chain/operations build && pnpm --filter @supply-chain/api build && pnpm contracts:generate && pnpm --filter @supply-chain/contracts build && pnpm --filter @supply-chain/api-client build && pnpm --filter @supply-chain/web build",
+    "typecheck": "pnpm build && pnpm check:boundaries",
+    "dev:api": "pnpm --filter @supply-chain/api dev",
+    "dev:web": "pnpm --filter @supply-chain/api-client build && pnpm --filter @supply-chain/web dev",
+    "migrate": "pnpm --filter @supply-chain/api build && node --env-file-if-exists=.env apps/api/dist/cli.js migrate",
+    "tenant:create": "node --env-file-if-exists=.env apps/api/dist/cli.js tenant:create",
+    "test": "pnpm build && node --test apps/api/tests/config.test.cjs tests/pilot-identity-audit.test.cjs",
+    "test:integration": "powershell -NoProfile -File scripts/Test-Integration.ps1",
+    "contracts:generate": "node scripts/Generate-Contracts.cjs",
+    "contracts:check": "node scripts/Generate-Contracts.cjs --check",
+    "check:boundaries": "node scripts/Check-Boundaries.cjs && node --test tests/boundaries.test.cjs",
+    "test:web": "pnpm --filter @supply-chain/web test",
+    "test:load": "powershell -NoProfile -File scripts/Test-Integration.ps1 -Mode Load",
+    "test:browser": "powershell -NoProfile -File scripts/Test-Integration.ps1 -Mode Browser",
+    "verify": "pnpm --filter @supply-chain/api build && pnpm contracts:check && pnpm check:boundaries && pnpm build && pnpm test:web",
+    "test:inventory-load": "powershell -NoProfile -File scripts/Test-Integration.ps1 -Mode InventoryLoad"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3",
+    "@supply-chain/operations": "workspace:*"
+  }
+}

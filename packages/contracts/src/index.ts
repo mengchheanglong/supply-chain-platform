@@ -1,0 +1,37 @@
+import type { components } from './generated/v1';
+export type { components, paths, operations } from './generated/v1';
+export type Facility = components['schemas']['FacilityDto'];
+export type Sku = components['schemas']['SkuDto'];
+export type TenantContext = components['schemas']['ContextDto'];
+export type Readiness = components['schemas']['ReadinessDto'];
+export type CreateFacility = components['schemas']['CreateFacilityDto'];
+export type CreateSku = components['schemas']['CreateSkuDto'];
+export type FacilityPage = components['schemas']['FacilityPageDto'];
+export type SkuPage = components['schemas']['SkuPageDto'];
+export type Created = components['schemas']['CreatedDto'];
+export type Unit = CreateSku['unit'];
+export type AccessRole = TenantContext['role'];
+export type StockCommand = components['schemas']['StockCommandDto'];
+export type ReservationCommand = components['schemas']['ReservationCommandDto'];
+export type InventoryResult = components['schemas']['InventoryCommandResultDto'];
+export type Stock = components['schemas']['StockDto'];
+export type Reservation = components['schemas']['ReservationDto'];
+export type Movement = components['schemas']['MovementDto'];
+
+export type OrderInput = components['schemas']['OrderInputDto'];
+export type AllocateInput = components['schemas']['AllocateInputDto'];
+export type AllocationInput = components['schemas']['AllocationInputDto'];
+export type CancelOrderInput = components['schemas']['CancelOrderInputDto'];
+export type ShipmentInput = components['schemas']['ShipmentInputDto'];
+export type ShipmentTransition = components['schemas']['ShipmentTransitionDto'];
+export type DeliveryInput = components['schemas']['DeliveryInputDto'];
+
+export type MappingInput = components['schemas']['MappingInputDto'];
+export type ImportInput = components['schemas']['ImportInputDto'];
+export type ExportInput = components['schemas']['ExportInputDto'];
+export type ExchangeDocument = components['schemas']['ExchangeDocumentDto'];
+export type SnapshotInput = components['schemas']['SnapshotInputDto'];
+export type SnapshotManifest = components['schemas']['SnapshotManifestDto'];
+export type SnapshotSummary = components['schemas']['SnapshotSummaryDto'];
+export type SnapshotPage = components['schemas']['SnapshotPageDto'];
+export type SnapshotArtifact = components['schemas']['SnapshotArtifactDto'];

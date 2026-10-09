@@ -1,0 +1,6644 @@
+{
+  "components": {
+    "schemas": {
+      "AllocateInputDto": {
+        "properties": {
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "lineId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,6})?$",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "orderId",
+          "lineId",
+          "quantity"
+        ],
+        "type": "object"
+      },
+      "AllocationDto": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "lineId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "reservationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "shipmentId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "allocated",
+              "picked",
+              "packed",
+              "shipped",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "unit",
+          "quantityPrecision",
+          "id",
+          "tenantId",
+          "orderId",
+          "lineId",
+          "reservationId",
+          "quantity",
+          "state",
+          "shipmentId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "AllocationInputDto": {
+        "properties": {
+          "allocationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "allocationId"
+        ],
+        "type": "object"
+      },
+      "AllocationPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AllocationDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "BalanceDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "stock": {
+            "$ref": "#/components/schemas/StockDto"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "stock"
+        ],
+        "type": "object"
+      },
+      "CancelOrderInputDto": {
+        "properties": {
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "orderId"
+        ],
+        "type": "object"
+      },
+      "ChecksDto": {
+        "properties": {
+          "database": {
+            "type": "boolean"
+          },
+          "migrations": {
+            "type": "boolean"
+          },
+          "postgis": {
+            "type": "boolean"
+          },
+          "restrictedRole": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "database",
+          "postgis",
+          "migrations",
+          "restrictedRole"
+        ],
+        "type": "object"
+      },
+      "ContextDto": {
+        "properties": {
+          "actorId": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "operator",
+              "reader"
+            ],
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "tenantName": {
+            "type": "string"
+          },
+          "timezone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "tenantId",
+          "tenantName",
+          "timezone",
+          "actorId",
+          "role"
+        ],
+        "type": "object"
+      },
+      "CreateFacilityDto": {
+        "properties": {
+          "code": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "externalId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "warehouse",
+              "depot"
+            ],
+            "type": "string"
+          },
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "locationSource": {
+            "enum": [
+              "surveyed",
+              "imported",
+              "estimated"
+            ],
+            "type": "string"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "timezone": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceSystem",
+          "externalId",
+          "code",
+          "name",
+          "kind",
+          "timezone",
+          "latitude",
+          "longitude",
+          "locationSource"
+        ],
+        "type": "object"
+      },
+      "CreateSkuDto": {
+        "properties": {
+          "code": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "externalId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceSystem",
+          "externalId",
+          "code",
+          "name",
+          "unit",
+          "quantityPrecision"
+        ],
+        "type": "object"
+      },
+      "CreatedDto": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "id"
+        ],
+        "type": "object"
+      },
+      "DeliveryInputDto": {
+        "properties": {
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "observedAt": {
+            "description": "Observed UTC delivery time; externalId identifies delivery evidence",
+            "format": "date-time",
+            "type": "string"
+          },
+          "shipmentId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "shipmentId",
+          "observedAt"
+        ],
+        "type": "object"
+      },
+      "DemandLineDto": {
+        "properties": {
+          "quantity": {
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,6})?$",
+            "type": "string"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "skuId",
+          "quantity",
+          "unit"
+        ],
+        "type": "object"
+      },
+      "DocumentPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentSummaryDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "DocumentSummaryDto": {
+        "properties": {
+          "acceptedRows": {
+            "type": "integer"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "import",
+              "export"
+            ],
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "validated",
+              "rejected",
+              "exported"
+            ],
+            "type": "string"
+          },
+          "totalRows": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "state",
+          "sourceSystem",
+          "externalId",
+          "generatedAt",
+          "totalRows",
+          "acceptedRows"
+        ],
+        "type": "object"
+      },
+      "ErrorDto": {
+        "properties": {
+          "correlationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "error": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/ErrorMessageDto"
+              }
+            ]
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "statusCode": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "statusCode",
+          "correlationId",
+          "error"
+        ],
+        "type": "object"
+      },
+      "ErrorMessageDto": {
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          },
+          "statusCode": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "type": "object"
+      },
+      "ExchangeDocumentDto": {
+        "properties": {
+          "acceptedRows": {
+            "type": "integer"
+          },
+          "actorId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "contentSha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "csv": {
+            "nullable": true,
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/QualityIssueDto"
+            },
+            "type": "array"
+          },
+          "kind": {
+            "enum": [
+              "import",
+              "export"
+            ],
+            "type": "string"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "planningApproved": {
+            "enum": [
+              false
+            ],
+            "type": "boolean"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/StagedStockDto"
+            },
+            "type": "array"
+          },
+          "resource": {
+            "enum": [
+              "stock-observations",
+              "facilities",
+              "skus",
+              "stock"
+            ],
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "external",
+              "operational"
+            ],
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "spreadsheetSafe": {
+            "type": "boolean"
+          },
+          "state": {
+            "enum": [
+              "validated",
+              "rejected",
+              "exported"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "totalRows": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "id",
+          "idempotencyKey",
+          "actorId",
+          "kind",
+          "state",
+          "resource",
+          "sourceSystem",
+          "externalId",
+          "fileName",
+          "generatedAt",
+          "contentSha256",
+          "totalRows",
+          "acceptedRows",
+          "issues",
+          "records",
+          "csv",
+          "nextCursor",
+          "spreadsheetSafe",
+          "planningApproved"
+        ],
+        "type": "object"
+      },
+      "ExportInputDto": {
+        "properties": {
+          "cursor": {
+            "maxLength": 1024,
+            "type": "string"
+          },
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "facilityId": {
+            "description": "Required only for stock export",
+            "format": "uuid",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "limit": {
+            "description": "Master-data page size 1–200; default 50",
+            "type": "string"
+          },
+          "resource": {
+            "enum": [
+              "facilities",
+              "skus",
+              "stock"
+            ],
+            "type": "string"
+          },
+          "skuId": {
+            "description": "Required only for stock export",
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "resource"
+        ],
+        "type": "object"
+      },
+      "FacilityDto": {
+        "properties": {
+          "code": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "externalId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "warehouse",
+              "depot"
+            ],
+            "type": "string"
+          },
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "locationSource": {
+            "enum": [
+              "surveyed",
+              "imported",
+              "estimated"
+            ],
+            "type": "string"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "timezone": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceSystem",
+          "externalId",
+          "code",
+          "name",
+          "kind",
+          "timezone",
+          "latitude",
+          "longitude",
+          "locationSource",
+          "tenantId",
+          "id",
+          "createdAt"
+        ],
+        "type": "object"
+      },
+      "FacilityPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FacilityDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "nextCursor",
+          "items"
+        ],
+        "type": "object"
+      },
+      "FulfillmentResultDto": {
+        "properties": {
+          "action": {
+            "enum": [
+              "order",
+              "allocate",
+              "pick",
+              "pack",
+              "cancel-allocation",
+              "cancel-order"
+            ],
+            "type": "string"
+          },
+          "allocationId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "idempotencyKey",
+          "action",
+          "orderId",
+          "allocationId"
+        ],
+        "type": "object"
+      },
+      "ImportInputDto": {
+        "properties": {
+          "csv": {
+            "description": "Stock observation CSV v1; at most 200 records. Validation never changes operational stock.",
+            "maxLength": 40000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "fileName": {
+            "maxLength": 160,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "schemaVersion",
+          "fileName",
+          "csv"
+        ],
+        "type": "object"
+      },
+      "InventoryCommandResultDto": {
+        "properties": {
+          "action": {
+            "enum": [
+              "receive",
+              "reserve",
+              "release",
+              "ship"
+            ],
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "movementId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "reservationId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "stock": {
+            "$ref": "#/components/schemas/StockDto"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "idempotencyKey",
+          "action",
+          "stock",
+          "reservationId",
+          "movementId"
+        ],
+        "type": "object"
+      },
+      "LivenessDto": {
+        "properties": {
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "status": {
+            "enum": [
+              "alive"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "status"
+        ],
+        "type": "object"
+      },
+      "MappingDto": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "entity": {
+            "enum": [
+              "facility",
+              "sku"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceExternalId": {
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "targetId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "entity",
+          "sourceSystem",
+          "sourceExternalId",
+          "targetId",
+          "createdAt"
+        ],
+        "type": "object"
+      },
+      "MappingInputDto": {
+        "properties": {
+          "entity": {
+            "enum": [
+              "facility",
+              "sku"
+            ],
+            "type": "string"
+          },
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceExternalId": {
+            "maxLength": 160,
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "targetId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "entity",
+          "sourceExternalId",
+          "targetId"
+        ],
+        "type": "object"
+      },
+      "MappingPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MappingDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "MappingReceiptDto": {
+        "properties": {
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mapping": {
+            "$ref": "#/components/schemas/MappingDto"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "idempotencyKey",
+          "mapping"
+        ],
+        "type": "object"
+      },
+      "MovementDto": {
+        "properties": {
+          "action": {
+            "enum": [
+              "receive",
+              "ship"
+            ],
+            "type": "string"
+          },
+          "actorId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "delta": {
+            "description": "Signed physical stock change",
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "reservationId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "facilityId",
+          "skuId",
+          "id",
+          "tenantId",
+          "delta",
+          "action",
+          "reservationId",
+          "sourceSystem",
+          "externalId",
+          "actorId",
+          "idempotencyKey",
+          "createdAt",
+          "unit",
+          "quantityPrecision"
+        ],
+        "type": "object"
+      },
+      "MovementPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MovementDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "OrderDetailDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/OrderLineDto"
+            },
+            "type": "array"
+          },
+          "order": {
+            "$ref": "#/components/schemas/OrderDto"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "order",
+          "lines"
+        ],
+        "type": "object"
+      },
+      "OrderDto": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "customerReference": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "open",
+              "partially_shipped",
+              "fulfilled",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "facilityId",
+          "customerReference",
+          "state",
+          "sourceSystem",
+          "externalId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "OrderInputDto": {
+        "properties": {
+          "customerReference": {
+            "description": "Opaque customer reference; no pricing or personal data required",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/DemandLineDto"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "type": "array"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "facilityId",
+          "customerReference",
+          "lines"
+        ],
+        "type": "object"
+      },
+      "OrderLineDto": {
+        "properties": {
+          "allocated": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "remaining": {
+            "type": "string"
+          },
+          "requested": {
+            "type": "string"
+          },
+          "shipped": {
+            "type": "string"
+          },
+          "skuCode": {
+            "type": "string"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "skuName": {
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "skuCode",
+          "skuName",
+          "id",
+          "orderId",
+          "skuId",
+          "unit",
+          "quantityPrecision",
+          "requested",
+          "allocated",
+          "shipped",
+          "remaining"
+        ],
+        "type": "object"
+      },
+      "OrderPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "QualityIssueDto": {
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "row": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "row",
+          "field",
+          "code",
+          "message"
+        ],
+        "type": "object"
+      },
+      "ReadinessDto": {
+        "properties": {
+          "checks": {
+            "$ref": "#/components/schemas/ChecksDto"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "unavailable"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "status",
+          "checks"
+        ],
+        "type": "object"
+      },
+      "ReconciliationDto": {
+        "properties": {
+          "activeReserved": {
+            "type": "string"
+          },
+          "consistent": {
+            "type": "boolean"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "ledgerOnHand": {
+            "type": "string"
+          },
+          "onHand": {
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "reserved": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "facilityId",
+          "skuId",
+          "unit",
+          "quantityPrecision",
+          "onHand",
+          "reserved",
+          "ledgerOnHand",
+          "activeReserved",
+          "consistent"
+        ],
+        "type": "object"
+      },
+      "ReservationCommandDto": {
+        "properties": {
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "reservationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "reservationId"
+        ],
+        "type": "object"
+      },
+      "ReservationDto": {
+        "properties": {
+          "actorId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "ownerId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "ownerType": {
+            "enum": [
+              "fulfillment"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "released",
+              "consumed"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "facilityId",
+          "skuId",
+          "ownerType",
+          "ownerId",
+          "id",
+          "tenantId",
+          "quantity",
+          "state",
+          "sourceSystem",
+          "externalId",
+          "actorId",
+          "idempotencyKey",
+          "createdAt",
+          "updatedAt",
+          "unit",
+          "quantityPrecision"
+        ],
+        "type": "object"
+      },
+      "ReservationPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReservationDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "ShipmentDto": {
+        "properties": {
+          "allocationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deliveredAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "deliveryReference": {
+            "nullable": true,
+            "type": "string"
+          },
+          "deliverySource": {
+            "nullable": true,
+            "type": "string"
+          },
+          "dispatchedAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "draft",
+              "dispatched",
+              "delivered",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "tenantId",
+          "orderId",
+          "allocationId",
+          "state",
+          "sourceSystem",
+          "externalId",
+          "createdAt",
+          "updatedAt",
+          "dispatchedAt",
+          "deliveredAt",
+          "deliverySource",
+          "deliveryReference"
+        ],
+        "type": "object"
+      },
+      "ShipmentInputDto": {
+        "properties": {
+          "allocationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "allocationId"
+        ],
+        "type": "object"
+      },
+      "ShipmentPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ShipmentDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "ShipmentTransitionDto": {
+        "properties": {
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "shipmentId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "shipmentId"
+        ],
+        "type": "object"
+      },
+      "ShippingResultDto": {
+        "properties": {
+          "action": {
+            "enum": [
+              "create",
+              "dispatch",
+              "deliver",
+              "cancel"
+            ],
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "movementId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "shipmentId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "draft",
+              "dispatched",
+              "delivered",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "idempotencyKey",
+          "action",
+          "shipmentId",
+          "orderId",
+          "state",
+          "movementId"
+        ],
+        "type": "object"
+      },
+      "SkuDto": {
+        "properties": {
+          "code": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "externalId": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^\\S(?:.*\\S)?$",
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceSystem",
+          "externalId",
+          "code",
+          "name",
+          "unit",
+          "quantityPrecision",
+          "tenantId",
+          "id",
+          "createdAt"
+        ],
+        "type": "object"
+      },
+      "SkuPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SkuDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "nextCursor",
+          "items"
+        ],
+        "type": "object"
+      },
+      "SnapshotApprovalDto": {
+        "properties": {
+          "approvedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "approvedBy": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "approvedBy",
+          "approvedAt"
+        ],
+        "type": "object"
+      },
+      "SnapshotArtifactDto": {
+        "properties": {
+          "byteSize": {
+            "type": "integer"
+          },
+          "content": {
+            "type": "string"
+          },
+          "contentSha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rowCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "fileName",
+          "mediaType",
+          "contentSha256",
+          "rowCount",
+          "byteSize",
+          "content"
+        ],
+        "type": "object"
+      },
+      "SnapshotArtifactSummaryDto": {
+        "properties": {
+          "byteSize": {
+            "type": "integer"
+          },
+          "contentSha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rowCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "fileName",
+          "mediaType",
+          "contentSha256",
+          "rowCount",
+          "byteSize"
+        ],
+        "type": "object"
+      },
+      "SnapshotInputDto": {
+        "properties": {
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "notes": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId"
+        ],
+        "type": "object"
+      },
+      "SnapshotLineageDto": {
+        "properties": {
+          "actorId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "cutoffAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "generatedAt",
+          "cutoffAt",
+          "tenantId",
+          "actorId",
+          "sourceSystem",
+          "externalId"
+        ],
+        "type": "object"
+      },
+      "SnapshotManifestDto": {
+        "properties": {
+          "actorId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "approval": {
+            "$ref": "#/components/schemas/SnapshotApprovalDto"
+          },
+          "approvedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "artifacts": {
+            "items": {
+              "$ref": "#/components/schemas/SnapshotArtifactSummaryDto"
+            },
+            "type": "array"
+          },
+          "contentSha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "lineage": {
+            "$ref": "#/components/schemas/SnapshotLineageDto"
+          },
+          "manifestSha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "manifestVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "planningApproved": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "manifestVersion",
+          "source",
+          "tenantId",
+          "id",
+          "idempotencyKey",
+          "actorId",
+          "sourceSystem",
+          "externalId",
+          "generatedAt",
+          "approvedAt",
+          "approval",
+          "planningApproved",
+          "manifestSha256",
+          "contentSha256",
+          "artifacts",
+          "lineage"
+        ],
+        "type": "object"
+      },
+      "SnapshotPageDto": {
+        "properties": {
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SnapshotSummaryDto"
+            },
+            "type": "array"
+          },
+          "nextCursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "enum": [
+              1
+            ],
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "operational"
+            ],
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "source",
+          "tenantId",
+          "generatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "SnapshotSummaryDto": {
+        "properties": {
+          "approvedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "artifactCount": {
+            "type": "integer"
+          },
+          "contentSha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "manifestSha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "planningApproved": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          },
+          "sourceSystem": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "sourceSystem",
+          "externalId",
+          "generatedAt",
+          "approvedAt",
+          "manifestSha256",
+          "contentSha256",
+          "planningApproved",
+          "artifactCount"
+        ],
+        "type": "object"
+      },
+      "StagedStockDto": {
+        "properties": {
+          "available": {
+            "type": "string"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "facilityRef": {
+            "type": "string"
+          },
+          "observedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "onHand": {
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "recordId": {
+            "type": "string"
+          },
+          "reserved": {
+            "type": "string"
+          },
+          "row": {
+            "type": "integer"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "skuRef": {
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "row",
+          "recordId",
+          "facilityRef",
+          "skuRef",
+          "facilityId",
+          "skuId",
+          "unit",
+          "quantityPrecision",
+          "onHand",
+          "reserved",
+          "available",
+          "observedAt"
+        ],
+        "type": "object"
+      },
+      "StockCommandDto": {
+        "properties": {
+          "externalId": {
+            "description": "Source event/document identity, unique per tenant and action",
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "description": "Retain this key and identical input when retrying an unconfirmed command",
+            "format": "uuid",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "Positive decimal string; must fit SKU precision. No implicit unit conversion.",
+            "example": "12.500",
+            "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,6})?$",
+            "type": "string"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 80,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "sourceSystem",
+          "externalId",
+          "facilityId",
+          "skuId",
+          "quantity",
+          "unit"
+        ],
+        "type": "object"
+      },
+      "StockDto": {
+        "properties": {
+          "available": {
+            "type": "string"
+          },
+          "facilityId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "onHand": {
+            "type": "string"
+          },
+          "quantityPrecision": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "reserved": {
+            "type": "string"
+          },
+          "skuId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "each",
+              "kg",
+              "m3",
+              "litre"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "facilityId",
+          "skuId",
+          "tenantId",
+          "unit",
+          "quantityPrecision",
+          "onHand",
+          "reserved",
+          "available"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "contact": {},
+    "description": "",
+    "title": "Supply Chain Operations API",
+    "version": "1.0"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/health/live": {
+      "get": {
+        "operationId": "HealthController_live",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LivenessDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/context": {
+      "get": {
+        "operationId": "ContextController_context",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Context"
+        ]
+      }
+    },
+    "/api/v1/facilities": {
+      "get": {
+        "operationId": "FacilityController_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 200,
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FacilityPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "facilities"
+        ]
+      },
+      "post": {
+        "operationId": "FacilityController_create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFacilityDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "facilities"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/allocate": {
+      "post": {
+        "operationId": "FulfillmentController_allocate",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocateInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillmentResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/allocations": {
+      "get": {
+        "operationId": "FulfillmentController_allocations",
+        "parameters": [
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllocationPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/cancel-allocation": {
+      "post": {
+        "operationId": "FulfillmentController_cancelAllocation",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocationInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillmentResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/cancel-order": {
+      "post": {
+        "operationId": "FulfillmentController_cancelOrder",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillmentResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/order": {
+      "get": {
+        "operationId": "FulfillmentController_detail",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "orderId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDetailDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/orders": {
+      "get": {
+        "operationId": "FulfillmentController_list",
+        "parameters": [
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      },
+      "post": {
+        "operationId": "FulfillmentController_order",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillmentResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/pack": {
+      "post": {
+        "operationId": "FulfillmentController_pack",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocationInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillmentResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/fulfillment/pick": {
+      "post": {
+        "operationId": "FulfillmentController_pick",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocationInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillmentResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "fulfillment"
+        ]
+      }
+    },
+    "/api/v1/integrations/document": {
+      "get": {
+        "operationId": "ExchangeController_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangeDocumentDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/integrations/documents": {
+      "get": {
+        "operationId": "ExchangeController_list",
+        "parameters": [
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/integrations/exports": {
+      "post": {
+        "operationId": "ExchangeController_export",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangeDocumentDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/integrations/imports": {
+      "post": {
+        "operationId": "ExchangeController_import",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangeDocumentDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/integrations/mappings": {
+      "get": {
+        "operationId": "ExchangeController_mappings",
+        "parameters": [
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappingPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      },
+      "post": {
+        "operationId": "ExchangeController_map",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MappingInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappingReceiptDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/integrations/snapshot": {
+      "get": {
+        "operationId": "ExchangeController_getSnapshot",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotManifestDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/integrations/snapshot/artifact": {
+      "get": {
+        "operationId": "ExchangeController_getArtifact",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotArtifactDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/integrations/snapshots": {
+      "get": {
+        "operationId": "ExchangeController_snapshots",
+        "parameters": [
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      },
+      "post": {
+        "operationId": "ExchangeController_snapshot",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SnapshotInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotManifestDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/inventory/balance": {
+      "get": {
+        "operationId": "InventoryController_balance",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "facilityId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "skuId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/movements": {
+      "get": {
+        "operationId": "InventoryController_movements",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "facilityId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "skuId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "pattern": "^[0-9]+$",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovementPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/receive": {
+      "post": {
+        "operationId": "InventoryController_receive",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryCommandResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/reconciliation": {
+      "get": {
+        "operationId": "InventoryController_reconcile",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "facilityId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "skuId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconciliationDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/release": {
+      "post": {
+        "operationId": "InventoryController_release",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservationCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryCommandResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/reservations": {
+      "get": {
+        "operationId": "InventoryController_reservations",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "facilityId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "skuId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "pattern": "^[0-9]+$",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/reserve": {
+      "post": {
+        "operationId": "InventoryController_reserve",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryCommandResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/ship": {
+      "post": {
+        "operationId": "InventoryController_ship",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservationCommandDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryCommandResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/shipping/cancel": {
+      "post": {
+        "operationId": "ShippingController_cancel",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShipmentTransitionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "shipping"
+        ]
+      }
+    },
+    "/api/v1/shipping/create": {
+      "post": {
+        "operationId": "ShippingController_create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShipmentInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "shipping"
+        ]
+      }
+    },
+    "/api/v1/shipping/deliver": {
+      "post": {
+        "operationId": "ShippingController_deliver",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryInputDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "shipping"
+        ]
+      }
+    },
+    "/api/v1/shipping/dispatch": {
+      "post": {
+        "operationId": "ShippingController_dispatch",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShipmentTransitionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingResultDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "shipping"
+        ]
+      }
+    },
+    "/api/v1/shipping/shipments": {
+      "get": {
+        "operationId": "ShippingController_list",
+        "parameters": [
+          {
+            "description": "1–200; default 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "maxLength": 1024,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "shipping"
+        ]
+      }
+    },
+    "/api/v1/skus": {
+      "get": {
+        "operationId": "SkuController_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 200,
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkuPageDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "skus"
+        ]
+      },
+      "post": {
+        "operationId": "SkuController_create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSkuDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "skus"
+        ]
+      }
+    }
+  },
+  "servers": [],
+  "tags": []
+}
