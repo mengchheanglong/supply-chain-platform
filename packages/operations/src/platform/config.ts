@@ -32,5 +32,5 @@ export function configuration(env: NodeJS.ProcessEnv = process.env): Configurati
   if (!['127.0.0.1', '::1', '0.0.0.0'].includes(host)) throw new Error('Invalid API_HOST');
   const poolMax = port(env.DB_POOL_MAX || '8', 'DB_POOL_MAX');
   if (poolMax > 100) throw new Error('DB_POOL_MAX must be at most 100');
-  return { connectionString, host, port: port(env.API_PORT || '3100', 'API_PORT'), poolMax };
+  return { connectionString, host, port: port(env.API_PORT || '8100', 'API_PORT'), poolMax };
 }

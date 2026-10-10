@@ -63,7 +63,7 @@ docs/
 ```
 
 Node.js 24 and pnpm 10.32.1 are pinned. The parent supplies local PostGIS and credentials;
-this application owns its migrations. API/UI development binds to loopback on 3100/3101.
+this application owns its migrations. API/UI development binds to loopback on 8100/8101.
 No operational fixtures or default tenant credentials are seeded.
 
 ## Local startup
@@ -81,7 +81,7 @@ pnpm dev:api
 pnpm dev:web
 ```
 
-Open http://127.0.0.1:3101. Tenant provisioning saves a generated operator credential
+Open http://127.0.0.1:8101. Tenant provisioning saves a generated operator credential
 to an ignored .secrets/<tenant-id>.json file. Paste its token into the UI. The database
 stores its SHA-256 hash; the UI keeps the token only in memory. This is genuine scoped
 local access, not a demo identity switch. OIDC, user management, rotation/expiry and

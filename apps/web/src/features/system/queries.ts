@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import type { ServiceNodeInfo, SystemHealthMatrixData } from './types';
 
-const PATHFINDER_ORIGIN = ((import.meta as any).env?.VITE_PATHFINDER_ORIGIN as string) || 'http://127.0.0.1:3000';
-const SANDBOX_ORIGIN = ((import.meta as any).env?.VITE_SANDBOX_ORIGIN as string) || 'http://127.0.0.1:3001';
+const PATHFINDER_ORIGIN = ((import.meta as any).env?.VITE_PATHFINDER_ORIGIN as string) || 'http://127.0.0.1:8000';
+const SANDBOX_ORIGIN = ((import.meta as any).env?.VITE_SANDBOX_ORIGIN as string) || 'http://127.0.0.1:8500';
 
 
 async function probeEndpoint<T>(
@@ -79,7 +79,7 @@ export async function fetchSystemHealth(): Promise<SystemHealthMatrixData> {
       id: 'platform-api',
       name: 'Supply Chain Operations Platform',
       role: 'NestJS / Fastify Operational Master API',
-      port: 3100,
+      port: 8100,
       protocol: 'HTTP / JSON REST',
       endpoint: '/api/health/live',
       status: apiProbe.ok ? 'healthy' : 'unavailable',
@@ -94,7 +94,7 @@ export async function fetchSystemHealth(): Promise<SystemHealthMatrixData> {
       id: 'osm-pathfinder',
       name: 'OSM Pathfinder Engine',
       role: 'Rust Axum Physical Road Graph & Contraction Hierarchies',
-      port: 3000,
+      port: 8000,
       protocol: 'HTTP / Axum',
       endpoint: `${PATHFINDER_ORIGIN}/api/health`,
       version: pathfinderHealthProbe.data?.version ?? '0.1.0',
@@ -114,7 +114,7 @@ export async function fetchSystemHealth(): Promise<SystemHealthMatrixData> {
       id: 'logistics-sandbox',
       name: 'Logistics Simulation Engine',
       role: 'Discrete-Event Dispatch & Virtual Fleet Engine',
-      port: 3001,
+      port: 8500,
       protocol: 'HTTP / Express / WS',
       endpoint: `${SANDBOX_ORIGIN}/api/health`,
       status: sandboxHealthProbe.ok ? 'healthy' : 'unavailable',
@@ -132,31 +132,31 @@ export async function fetchSystemHealth(): Promise<SystemHealthMatrixData> {
       id: 'operations-web',
       name: 'Operations Mission Control UI',
       role: 'React 19 + Vite Operations SPA (Current Frontend)',
-      port: 3101,
+      port: 8101,
       protocol: 'HTTP / React 19',
-      endpoint: 'http://127.0.0.1:3101',
+      endpoint: 'http://127.0.0.1:8101',
       status: 'healthy',
       latencyMs: 1,
       details: {
         framework: 'React 19 + Vite',
         tanstackQuery: true,
       },
-      message: 'Active frontend session running on port 3101',
+      message: 'Active frontend session running on port 8101',
     },
     {
       id: 'sandbox-visualizer',
       name: 'Sandbox 3D Visualizer',
       role: 'MapLibre GL + deck.gl 3D Simulation Deck',
-      port: 5173,
+      port: 8501,
       protocol: 'HTTP / Vite',
-      endpoint: 'http://127.0.0.1:5173',
+      endpoint: 'http://127.0.0.1:8501',
       status: 'healthy',
       latencyMs: 1,
       details: {
         renderer: 'MapLibre GL + deck.gl',
         writeAuthority: false,
       },
-      message: 'Independent observer UI on loopback port 5173',
+      message: 'Independent observer UI on loopback port 8501',
     },
   ];
 
