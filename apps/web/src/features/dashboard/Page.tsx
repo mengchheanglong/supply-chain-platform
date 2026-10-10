@@ -329,7 +329,6 @@ export default function Page() {
           style={{
             background: '#ffffff',
             border: '1px solid var(--color-border)',
-            borderLeft: '3px solid #f59e0b',
             borderRadius: 'var(--radius-md)',
             padding: '14px 20px',
             marginBottom: '20px',

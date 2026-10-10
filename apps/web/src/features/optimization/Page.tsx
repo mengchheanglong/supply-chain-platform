@@ -252,8 +252,7 @@ export default function Page() {
           <div
             style={{
               background: '#ffffff',
-              border: hasRisk ? '1px solid #fed7aa' : '1px solid #bbf7d0',
-              borderLeft: hasRisk ? '3px solid #f59e0b' : '3px solid #10b981',
+              border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-md)',
               padding: '16px 20px',
               marginBottom: '22px',

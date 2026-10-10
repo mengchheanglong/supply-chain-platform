@@ -214,6 +214,7 @@ test('interactively opens order allocation triage modal', async () => {
 test('submits quick inbound stock receipt to double-entry ledger', async () => {
   setup();
   await screen.findByText('Supply Chain Command & Operations Control');
+  await screen.findByText('Phnom Penh Hub');
 
   const qtyInput = screen.getByPlaceholderText('Quantity…');
   fireEvent.change(qtyInput, { target: { value: '50' } });
