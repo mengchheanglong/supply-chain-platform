@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { SessionProvider, useSession } from '../../app/session';
 import Page from './Page';
@@ -26,11 +26,11 @@ const mockFacility = {
   tenantId: 'tenant-1',
   code: 'PNH-01',
   name: 'Phnom Penh Hub',
-  kind: 'distribution_center',
+  kind: 'distribution_center' as const,
   timezone: 'Asia/Phnom_Penh',
   latitude: 11.5564,
   longitude: 104.9282,
-  locationSource: 'surveyed',
+  locationSource: 'surveyed' as const,
   sourceSystem: 'ops',
   externalId: 'ext-pnh',
   createdAt: '2026-01-01T00:00:00Z',
@@ -60,10 +60,28 @@ const mockOrder = {
   updatedAt: '2026-01-01T00:00:00Z',
 };
 
+const mockOrderDetail = {
+  ...mockOrder,
+  lines: [
+    {
+      id: 'line-1',
+      orderId: mockOrder.id,
+      skuId: mockSku.id,
+      skuCode: mockSku.code,
+      skuName: mockSku.name,
+      unit: mockSku.unit,
+      requested: '10',
+      allocated: '0',
+      remaining: '10',
+      shipped: '0',
+      quantityPrecision: 0,
+    },
+  ],
+};
 
 function setup() {
   vi.mocked(api).mockReset();
-  vi.mocked(api).mockImplementation(async (path) => {
+  vi.mocked(api).mockImplementation(async (path, method) => {
     if (path === '/api/v1/context') {
       return {
         schemaVersion: 1,
@@ -104,13 +122,25 @@ function setup() {
         nextCursor: null,
       } as any;
     }
+    if (path === '/api/v1/fulfillment/order') {
+      return mockOrderDetail as any;
+    }
     if (path === '/api/v1/inventory/balance') {
       return {
         schemaVersion: 1,
         source: 'operational',
         tenantId: 'tenant-1',
         generatedAt: '2026-01-01T00:00:00Z',
-        balance: { onHand: 150, reserved: 20, available: 130 },
+        stock: {
+          tenantId: 'tenant-1',
+          facilityId: mockFacility.id,
+          skuId: mockSku.id,
+          unit: 'each',
+          onHand: '150',
+          reserved: '20',
+          available: '130',
+          quantityPrecision: 0,
+        },
       } as any;
     }
     if (path === '/api/v1/inventory/reconciliation') {
@@ -119,8 +149,33 @@ function setup() {
         source: 'operational',
         tenantId: 'tenant-1',
         generatedAt: '2026-01-01T00:00:00Z',
-        reconciled: true,
-        driftDetected: false,
+        facilityId: mockFacility.id,
+        skuId: mockSku.id,
+        unit: 'each',
+        consistent: true,
+        onHand: '150',
+        activeReserved: '20',
+        reserved: '20',
+        ledgerOnHand: '150',
+        quantityPrecision: 0,
+      } as any;
+    }
+    if (path === '/api/v1/inventory/receive' && method === 'post') {
+      return {
+        schemaVersion: 1,
+        source: 'operational',
+        tenantId: 'tenant-1',
+        generatedAt: '2026-01-01T00:00:00Z',
+        movementId: 'mov-1',
+      } as any;
+    }
+    if (path === '/api/v1/fulfillment/allocate' && method === 'post') {
+      return {
+        schemaVersion: 1,
+        source: 'operational',
+        tenantId: 'tenant-1',
+        generatedAt: '2026-01-01T00:00:00Z',
+        allocationId: 'alc-1',
       } as any;
     }
     return {} as any;
@@ -136,32 +191,39 @@ function setup() {
 
 afterEach(cleanup);
 
-test('renders dashboard command overview with live telemetry and KPI ratios', async () => {
+test('renders operational command center with live telemetry and workbench', async () => {
   setup();
   await screen.findByText('Supply Chain Command & Operations Control');
   await screen.findByText('Phnom Penh Hub');
-  expect(screen.getByText('Command Overview')).toBeDefined();
-  expect(screen.getByText('Order Fulfillment Velocity Funnel')).toBeDefined();
+  await screen.findByText('Stock Inspector & Quick Ledger');
+  await screen.findByText('150'); // onHand balance
 });
 
 
-test('switches across Klipfolio dashboard tabs with interactive intelligence views', async () => {
+test('interactively opens order allocation triage modal', async () => {
   setup();
   await screen.findByText('Supply Chain Command & Operations Control');
 
-  // Tab 2: Order Performance
-  fireEvent.click(screen.getByText('Order Performance'));
-  await screen.findByText('Back Order Rate');
-  expect(screen.getByText('Hub Delivery Accuracy & Fulfillment Matrix')).toBeDefined();
-  expect(screen.getByText('Active Demand Pipeline (1)')).toBeDefined();
+  const allocateBtn = await screen.findByText('Allocate Line');
+  fireEvent.click(allocateBtn);
 
-  // Tab 3: Inventory Health & Cost
-  fireEvent.click(screen.getByText('Inventory Health & Cost'));
-  await screen.findByText('Carrying Cost of Inventory (Cost of Carry Breakdown)');
-  expect(screen.getByText('ABC Inventory Velocity & Catalog Stratification')).toBeDefined();
+  await screen.findByText('Allocate Customer Order');
+  expect(screen.getByText('Units to Allocate from Hub:')).toBeDefined();
+});
 
-  // Tab 4: Shipping & Logistics Status
-  fireEvent.click(screen.getByText('Shipping & Logistics Status'));
-  await screen.findByText('Orders Ready to Ship');
-  expect(screen.getByText('Inventory Breakdown by Operational Category')).toBeDefined();
+test('submits quick inbound stock receipt to double-entry ledger', async () => {
+  setup();
+  await screen.findByText('Supply Chain Command & Operations Control');
+
+  const qtyInput = screen.getByPlaceholderText('Quantity…');
+  fireEvent.change(qtyInput, { target: { value: '50' } });
+
+  const submitBtn = screen.getByText('+ Commit Inbound Stock to Ledger');
+  fireEvent.click(submitBtn);
+
+  await waitFor(() => {
+    expect(
+      vi.mocked(api).mock.calls.some((call) => call[0] === '/api/v1/inventory/receive' && call[1] === 'post')
+    ).toBe(true);
+  });
 });

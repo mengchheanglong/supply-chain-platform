@@ -14,6 +14,8 @@ import {
   DatabaseIcon,
   ActivityIcon,
   LogOutIcon,
+  ServerIcon,
+  RadioIcon,
 } from '../shared/icons';
 
 const Dashboard = lazy(() => import('../features/dashboard/Page'));
@@ -22,6 +24,8 @@ const Fulfillment = lazy(() => import('../features/fulfillment/Page'));
 const Facilities = lazy(() => import('../features/facilities/Page'));
 const Inventory = lazy(() => import('../features/inventory/Page'));
 const Catalog = lazy(() => import('../features/catalog/Page'));
+const Fleet = lazy(() => import('../features/fleet/Page'));
+const System = lazy(() => import('../features/system/Page'));
 
 export function App() {
   const { session, disconnect } = useSession();
@@ -39,35 +43,47 @@ export function App() {
       ? 'Data exchange'
       : location.pathname === '/fulfillment'
         ? 'Fulfillment & shipping'
-        : location.pathname === '/inventory'
-          ? 'Inventory'
-          : location.pathname === '/skus'
-            ? 'SKU master'
-            : location.pathname === '/facilities'
-              ? 'Facilities'
-              : 'Operations Dashboard';
+        : location.pathname === '/fleet'
+          ? 'Fleet & Simulation Control'
+          : location.pathname === '/inventory'
+            ? 'Inventory'
+            : location.pathname === '/skus'
+              ? 'SKU master'
+              : location.pathname === '/facilities'
+                ? 'Facilities'
+                : location.pathname === '/system'
+                  ? 'Ecosystem Health Matrix'
+                  : 'Operations Dashboard';
 
   const category =
     location.pathname === '/integrations'
       ? 'DATA EXCHANGE'
       : location.pathname === '/fulfillment'
         ? 'FULFILLMENT'
-        : location.pathname === '/inventory'
-          ? 'INVENTORY'
-          : location.pathname === '/facilities'
-            ? 'MASTER DATA'
-            : 'MISSION CONTROL';
+        : location.pathname === '/fleet'
+          ? 'FLEET & SIMULATION'
+          : location.pathname === '/inventory'
+            ? 'INVENTORY'
+            : location.pathname === '/facilities'
+              ? 'MASTER DATA'
+              : location.pathname === '/system'
+                ? 'SYSTEM & INFRASTRUCTURE'
+                : 'MISSION CONTROL';
 
   const subtitle =
     location.pathname === '/integrations'
       ? 'Validate external data and export authorized records.'
       : location.pathname === '/fulfillment'
         ? 'Fulfill demand and record shipment progress.'
-        : location.pathname === '/inventory'
-          ? 'Record stock movements and manage reservations.'
-          : location.pathname === '/facilities'
-            ? 'Maintain the operational network and stock-keeping definitions.'
-            : 'Real-time multi-echelon network topology, ledger audit, and order throughput.';
+        : location.pathname === '/fleet'
+          ? 'Real-time digital twin monitoring and dispatch telemetry from the logistics sandbox.'
+          : location.pathname === '/inventory'
+            ? 'Record stock movements and manage reservations.'
+            : location.pathname === '/facilities'
+              ? 'Maintain the operational network and stock-keeping definitions.'
+              : location.pathname === '/system'
+                ? 'Cross-service telemetry, physical routing engine, and PostGIS database readiness.'
+                : 'Real-time multi-echelon network topology, ledger audit, and order throughput.';
 
   return (
     <div className="shell">
@@ -102,9 +118,17 @@ export function App() {
             <TruckIcon size={16} />
             <span>Fulfillment & shipping</span>
           </NavLink>
+          <NavLink to="/fleet">
+            <RadioIcon size={16} />
+            <span>Fleet & Simulation</span>
+          </NavLink>
           <NavLink to="/integrations">
             <ExchangeIcon size={16} />
             <span>Data exchange</span>
+          </NavLink>
+          <NavLink to="/system">
+            <ServerIcon size={16} />
+            <span>System Health</span>
           </NavLink>
         </nav>
 
@@ -208,6 +232,8 @@ export function App() {
                 <Route path="/inventory" element={<Inventory key={session.id} />} />
                 <Route path="/facilities" element={<Facilities key={session.id} />} />
                 <Route path="/skus" element={<Catalog key={session.id} />} />
+                <Route path="/fleet" element={<Fleet key={session.id} />} />
+                <Route path="/system" element={<System key={session.id} />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Suspense>
