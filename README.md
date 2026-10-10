@@ -39,8 +39,9 @@ Related independent services:
 
 - osm-pathfinder — road costs and route geometry; never vehicle assignment or stock ownership.
 - logistics-sandbox — experiments against copied data; never the operational source of truth.
-- distribution-intelligence (future) — optimization, scenarios and decision comparison.
-- ecommerce-hive-nosql — reviewed reference patterns, not a codebase to copy wholesale.
+- distribution-intelligence — VRPTW solver, constraint validator, financial cost-to-serve models, and scenario evaluation (OPT-01, EVAL-01).
+- ecommerce-hive-nosql — commercial customer storefront; orders automatically bridge into fulfillment and double-entry stock allocation via SupplyChainBridgeService.
+- platform-admin — standalone ecosystem administration control plane (port 3300).
 
 ## Implemented foundation
 
@@ -137,7 +138,8 @@ See [the workflow API and transition policy](docs/FULFILLMENT.md).
 4. OPS-02: completed locally; transactional inventory ledger and idempotent reservations.
 5. OPS-03: completed locally; partial fulfillment, picking/packing and observed shipment states.
 6. DATA-01: completed locally; bounded CSV staging, quality reports and authorized exports.
-7. DATA-02: next; approved tenant-scoped immutable snapshots and hashed artifact manifests.
+7. DATA-02: completed locally; approved tenant-scoped immutable snapshots and hashed artifact manifests.
+8. PILOT-01: completed locally; enterprise OIDC/JWT, RBAC, tamper-evident audit logs, and backup verification.
 
 Read [AGENTS.md](AGENTS.md), [domain model](docs/DOMAIN_MODEL.md),
 [roadmap](docs/ROADMAP.md), [reuse decision](docs/REUSE.md) and

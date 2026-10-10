@@ -203,22 +203,12 @@ async function seed() {
       await client.query('BEGIN');
       await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId]);
       try {
-        // Upsert balance
-        await client.query(
-          `INSERT INTO public.sc_inventory_balances 
-           (tenant_id, facility_id, sku_id, unit, quantity_precision, on_hand, reserved)
-           VALUES ($1, $2, $3, $4, $5, $6, 0)
-           ON CONFLICT (tenant_id, facility_id, sku_id) 
-           DO UPDATE SET on_hand = sc_inventory_balances.on_hand + EXCLUDED.on_hand`,
-          [tenantId, pnhFacilityId, skuId, s.unit, s.precision, s.initialStock]
-        );
-
-        // Record command
-        await client.query(
+        const cmdRes = await client.query(
           `INSERT INTO public.sc_inventory_commands
            (tenant_id, idempotency_key, action, fingerprint, source_system, external_id, result)
            VALUES ($1, $2, 'receive', $3, 'seed-data', $4, $5)
-           ON CONFLICT (tenant_id, idempotency_key) DO NOTHING`,
+           ON CONFLICT (tenant_id, action, source_system, external_id) DO NOTHING
+           RETURNING idempotency_key`,
           [
             tenantId,
             idempotencyKey,
@@ -228,23 +218,35 @@ async function seed() {
           ]
         );
 
-        // Record ledger movement
+        // Upsert balance
         await client.query(
-          `INSERT INTO public.sc_inventory_movements
-           (id, tenant_id, facility_id, sku_id, delta, action, source_system, external_id, actor_id, idempotency_key)
-           VALUES ($1, $2, $3, $4, $5, 'receive', 'seed-data', $6, $7, $8)
-           ON CONFLICT DO NOTHING`,
-          [
-            movementId,
-            tenantId,
-            pnhFacilityId,
-            skuId,
-            s.initialStock,
-            `seed-mv-${s.code}`,
-            actorId,
-            idempotencyKey,
-          ]
+          `INSERT INTO public.sc_inventory_balances 
+           (tenant_id, facility_id, sku_id, unit, quantity_precision, on_hand, reserved)
+           VALUES ($1, $2, $3, $4, $5, $6, 0)
+           ON CONFLICT (tenant_id, facility_id, sku_id) 
+           DO UPDATE SET on_hand = GREATEST(sc_inventory_balances.on_hand, EXCLUDED.on_hand)`,
+          [tenantId, pnhFacilityId, skuId, s.unit, s.precision, s.initialStock]
         );
+
+        if (cmdRes.rowCount > 0) {
+          // Record ledger movement
+          await client.query(
+            `INSERT INTO public.sc_inventory_movements
+             (id, tenant_id, facility_id, sku_id, delta, action, source_system, external_id, actor_id, idempotency_key)
+             VALUES ($1, $2, $3, $4, $5, 'receive', 'seed-data', $6, $7, $8)
+             ON CONFLICT (tenant_id, action, source_system, external_id) DO NOTHING`,
+            [
+              movementId,
+              tenantId,
+              pnhFacilityId,
+              skuId,
+              s.initialStock,
+              `seed-mv-${s.code}`,
+              actorId,
+              idempotencyKey,
+            ]
+          );
+        }
 
         await client.query('COMMIT');
       } catch (err) {
@@ -279,13 +281,21 @@ async function seed() {
       await client.query('BEGIN');
       await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId]);
       try {
-        await client.query(
-          `INSERT INTO public.sc_orders
-           (id, tenant_id, facility_id, customer_reference, state, source_system, external_id, actor_id)
-           VALUES ($1, $2, $3, $4, 'open', 'seed-data', $5, $6)
-           ON CONFLICT (tenant_id, source_system, external_id) DO NOTHING`,
-          [orderId, tenantId, pnhFacilityId, ord.customerRef, ord.externalId, actorId]
+        let actualOrderId = orderId;
+        const existing = await client.query(
+          `SELECT id FROM public.sc_orders WHERE tenant_id = $1 AND source_system = $2 AND external_id = $3`,
+          [tenantId, 'seed-data', ord.externalId]
         );
+        if (existing.rowCount > 0) {
+          actualOrderId = existing.rows[0].id;
+        } else {
+          await client.query(
+            `INSERT INTO public.sc_orders
+             (id, tenant_id, facility_id, customer_reference, state, source_system, external_id, actor_id)
+             VALUES ($1, $2, $3, $4, 'open', 'seed-data', $5, $6)`,
+            [orderId, tenantId, pnhFacilityId, ord.customerRef, ord.externalId, actorId]
+          );
+        }
 
         await client.query(
           `INSERT INTO public.sc_order_lines
@@ -295,7 +305,7 @@ async function seed() {
           [
             lineId,
             tenantId,
-            orderId,
+            actualOrderId,
             skuId,
             skuObj.code,
             skuObj.name,
