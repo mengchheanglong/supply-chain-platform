@@ -12,6 +12,7 @@
     "dev:api": "pnpm --filter @supply-chain/api dev",
     "dev:web": "pnpm --filter @supply-chain/api-client build && pnpm --filter @supply-chain/web dev",
     "migrate": "pnpm --filter @supply-chain/api build && node --env-file-if-exists=.env apps/api/dist/cli.js migrate",
+    "seed": "node --env-file-if-exists=.env scripts/Seed.cjs",
     "tenant:create": "node --env-file-if-exists=.env apps/api/dist/cli.js tenant:create",
     "test": "pnpm build && node --test apps/api/tests/config.test.cjs tests/pilot-identity-audit.test.cjs",
     "test:integration": "powershell -NoProfile -File scripts/Test-Integration.ps1",
