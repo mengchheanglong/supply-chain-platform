@@ -16,6 +16,7 @@ import {
   LogOutIcon,
 } from '../shared/icons';
 
+const Dashboard = lazy(() => import('../features/dashboard/Page'));
 const Integrations = lazy(() => import('../features/integrations/Page'));
 const Fulfillment = lazy(() => import('../features/fulfillment/Page'));
 const Facilities = lazy(() => import('../features/facilities/Page'));
@@ -31,6 +32,8 @@ export function App() {
     refetchInterval: 10000,
   });
 
+  const isDashboard = location.pathname === '/' || location.pathname === '/dashboard';
+
   const title =
     location.pathname === '/integrations'
       ? 'Data exchange'
@@ -40,7 +43,9 @@ export function App() {
           ? 'Inventory'
           : location.pathname === '/skus'
             ? 'SKU master'
-            : 'Facilities';
+            : location.pathname === '/facilities'
+              ? 'Facilities'
+              : 'Operations Dashboard';
 
   const category =
     location.pathname === '/integrations'
@@ -49,7 +54,9 @@ export function App() {
         ? 'FULFILLMENT'
         : location.pathname === '/inventory'
           ? 'INVENTORY'
-          : 'MASTER DATA';
+          : location.pathname === '/facilities'
+            ? 'MASTER DATA'
+            : 'MISSION CONTROL';
 
   const subtitle =
     location.pathname === '/integrations'
@@ -58,7 +65,9 @@ export function App() {
         ? 'Fulfill demand and record shipment progress.'
         : location.pathname === '/inventory'
           ? 'Record stock movements and manage reservations.'
-          : 'Maintain the operational network and stock-keeping definitions.';
+          : location.pathname === '/facilities'
+            ? 'Maintain the operational network and stock-keeping definitions.'
+            : 'Real-time multi-echelon network topology, ledger audit, and order throughput.';
 
   return (
     <div className="shell">
@@ -73,6 +82,10 @@ export function App() {
         <p>Enterprise warehouse & distribution</p>
 
         <nav aria-label="Operations">
+          <NavLink to="/dashboard" end>
+            <ActivityIcon size={16} />
+            <span>Dashboard</span>
+          </NavLink>
           <NavLink to="/facilities">
             <WarehouseIcon size={16} />
             <span>Facilities</span>
@@ -137,60 +150,65 @@ export function App() {
               </button>
             </div>
 
-            <div className="kpi-grid">
-              <div className="kpi-card">
-                <div className="kpi-card-head">
-                  <span className="kpi-card-title">Network Facilities</span>
-                  <div className="kpi-card-icon">
-                    <WarehouseIcon size={16} />
+            {/* Quick KPI Strip when inside sub-pages */}
+            {!isDashboard && (
+              <div className="kpi-grid">
+                <div className="kpi-card">
+                  <div className="kpi-card-head">
+                    <span className="kpi-card-title">Network Facilities</span>
+                    <div className="kpi-card-icon">
+                      <WarehouseIcon size={16} />
+                    </div>
                   </div>
+                  <div className="kpi-card-value">4</div>
+                  <span className="kpi-card-desc">Hubs & regional depots</span>
                 </div>
-                <div className="kpi-card-value">4</div>
-                <span className="kpi-card-desc">Hubs & regional depots</span>
-              </div>
 
-              <div className="kpi-card">
-                <div className="kpi-card-head">
-                  <span className="kpi-card-title">Catalog SKUs</span>
-                  <div className="kpi-card-icon">
-                    <PackageIcon size={16} />
+                <div className="kpi-card">
+                  <div className="kpi-card-head">
+                    <span className="kpi-card-title">Catalog SKUs</span>
+                    <div className="kpi-card-icon">
+                      <PackageIcon size={16} />
+                    </div>
                   </div>
+                  <div className="kpi-card-value">4</div>
+                  <span className="kpi-card-desc">Tracked enterprise units</span>
                 </div>
-                <div className="kpi-card-value">4</div>
-                <span className="kpi-card-desc">Tracked enterprise units</span>
-              </div>
 
-              <div className="kpi-card">
-                <div className="kpi-card-head">
-                  <span className="kpi-card-title">Double-Entry Ledger</span>
-                  <div className="kpi-card-icon">
-                    <DatabaseIcon size={16} />
+                <div className="kpi-card">
+                  <div className="kpi-card-head">
+                    <span className="kpi-card-title">Double-Entry Ledger</span>
+                    <div className="kpi-card-icon">
+                      <DatabaseIcon size={16} />
+                    </div>
                   </div>
+                  <div className="kpi-card-value" style={{ color: 'var(--color-accent)' }}>100%</div>
+                  <span className="kpi-card-desc">Reconciled stock balance</span>
                 </div>
-                <div className="kpi-card-value" style={{ color: 'var(--color-accent)' }}>100%</div>
-                <span className="kpi-card-desc">Reconciled stock balance</span>
-              </div>
 
-              <div className="kpi-card">
-                <div className="kpi-card-head">
-                  <span className="kpi-card-title">Security Isolation</span>
-                  <div className="kpi-card-icon">
-                    <ShieldCheckIcon size={16} />
+                <div className="kpi-card">
+                  <div className="kpi-card-head">
+                    <span className="kpi-card-title">Security Isolation</span>
+                    <div className="kpi-card-icon">
+                      <ShieldCheckIcon size={16} />
+                    </div>
                   </div>
+                  <div className="kpi-card-value" style={{ fontSize: '20px', color: 'var(--color-primary)' }}>RLS Active</div>
+                  <span className="kpi-card-desc">Tenant-scoped PostgreSQL</span>
                 </div>
-                <div className="kpi-card-value" style={{ fontSize: '20px', color: 'var(--color-primary)' }}>RLS Active</div>
-                <span className="kpi-card-desc">Tenant-scoped PostgreSQL</span>
               </div>
-            </div>
+            )}
 
             <Suspense fallback={<p role="status">Loading workspace…</p>}>
               <Routes>
+                <Route path="/dashboard" element={<Dashboard key={session.id} />} />
+                <Route path="/" element={<Dashboard key={session.id} />} />
                 <Route path="/integrations" element={<Integrations key={session.id} />} />
                 <Route path="/fulfillment" element={<Fulfillment key={session.id} />} />
                 <Route path="/inventory" element={<Inventory key={session.id} />} />
                 <Route path="/facilities" element={<Facilities key={session.id} />} />
                 <Route path="/skus" element={<Catalog key={session.id} />} />
-                <Route path="*" element={<Navigate to="/facilities" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Suspense>
           </>
