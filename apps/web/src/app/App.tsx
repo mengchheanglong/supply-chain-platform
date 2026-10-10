@@ -16,6 +16,7 @@ import {
   LogOutIcon,
   ServerIcon,
   RadioIcon,
+  CompassIcon,
 } from '../shared/icons';
 
 const Dashboard = lazy(() => import('../features/dashboard/Page'));
@@ -26,6 +27,7 @@ const Inventory = lazy(() => import('../features/inventory/Page'));
 const Catalog = lazy(() => import('../features/catalog/Page'));
 const Fleet = lazy(() => import('../features/fleet/Page'));
 const System = lazy(() => import('../features/system/Page'));
+const Optimization = lazy(() => import('../features/optimization/Page'));
 
 export function App() {
   const { session, disconnect } = useSession();
@@ -45,15 +47,17 @@ export function App() {
         ? 'Fulfillment & shipping'
         : location.pathname === '/fleet'
           ? 'Fleet & Simulation Control'
-          : location.pathname === '/inventory'
-            ? 'Inventory'
-            : location.pathname === '/skus'
-              ? 'SKU master'
-              : location.pathname === '/facilities'
-                ? 'Facilities'
-                : location.pathname === '/system'
-                  ? 'Ecosystem Health Matrix'
-                  : 'Operations Dashboard';
+          : location.pathname === '/optimization'
+            ? 'Route Optimization & Intelligence'
+            : location.pathname === '/inventory'
+              ? 'Inventory'
+              : location.pathname === '/skus'
+                ? 'SKU master'
+                : location.pathname === '/facilities'
+                  ? 'Facilities'
+                  : location.pathname === '/system'
+                    ? 'Ecosystem Health Matrix'
+                    : 'Operations Dashboard';
 
   const category =
     location.pathname === '/integrations'
@@ -62,13 +66,15 @@ export function App() {
         ? 'FULFILLMENT'
         : location.pathname === '/fleet'
           ? 'FLEET & SIMULATION'
-          : location.pathname === '/inventory'
-            ? 'INVENTORY'
-            : location.pathname === '/facilities'
-              ? 'MASTER DATA'
-              : location.pathname === '/system'
-                ? 'SYSTEM & INFRASTRUCTURE'
-                : 'MISSION CONTROL';
+          : location.pathname === '/optimization'
+            ? 'DECISION INTELLIGENCE'
+            : location.pathname === '/inventory'
+              ? 'INVENTORY'
+              : location.pathname === '/facilities'
+                ? 'MASTER DATA'
+                : location.pathname === '/system'
+                  ? 'SYSTEM & INFRASTRUCTURE'
+                  : 'MISSION CONTROL';
 
   const subtitle =
     location.pathname === '/integrations'
@@ -77,13 +83,15 @@ export function App() {
         ? 'Fulfill demand and record shipment progress.'
         : location.pathname === '/fleet'
           ? 'Real-time digital twin monitoring and dispatch telemetry from the logistics sandbox.'
-          : location.pathname === '/inventory'
-            ? 'Record stock movements and manage reservations.'
-            : location.pathname === '/facilities'
-              ? 'Maintain the operational network and stock-keeping definitions.'
-              : location.pathname === '/system'
-                ? 'Cross-service telemetry, physical routing engine, and PostGIS database readiness.'
-                : 'Real-time multi-echelon network topology, ledger audit, and order throughput.';
+          : location.pathname === '/optimization'
+            ? 'Vehicle Routing with Time Windows (VRPTW), metaheuristic dispatch, and financial cost-to-serve evaluation.'
+            : location.pathname === '/inventory'
+              ? 'Record stock movements and manage reservations.'
+              : location.pathname === '/facilities'
+                ? 'Maintain the operational network and stock-keeping definitions.'
+                : location.pathname === '/system'
+                  ? 'Cross-service telemetry, physical routing engine, and PostGIS database readiness.'
+                  : 'Real-time multi-echelon network topology, ledger audit, and order throughput.';
 
   return (
     <div className="shell">
@@ -121,6 +129,10 @@ export function App() {
           <NavLink to="/fleet">
             <RadioIcon size={16} />
             <span>Fleet & Simulation</span>
+          </NavLink>
+          <NavLink to="/optimization">
+            <CompassIcon size={16} />
+            <span>Optimization</span>
           </NavLink>
           <NavLink to="/integrations">
             <ExchangeIcon size={16} />
@@ -233,6 +245,7 @@ export function App() {
                 <Route path="/facilities" element={<Facilities key={session.id} />} />
                 <Route path="/skus" element={<Catalog key={session.id} />} />
                 <Route path="/fleet" element={<Fleet key={session.id} />} />
+                <Route path="/optimization" element={<Optimization key={session.id} />} />
                 <Route path="/system" element={<System key={session.id} />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
