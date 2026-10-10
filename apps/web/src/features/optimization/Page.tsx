@@ -8,6 +8,7 @@ import {
   TruckIcon,
   TrendingUpIcon,
   CheckCircleIcon,
+  AlertCircleIcon,
   ClockIcon,
   MapPinIcon,
   ActivityIcon,
@@ -238,42 +239,80 @@ export default function Page() {
       </div>
 
       {/* Actionable Pilot Recommendation Banner (EVAL-01) */}
-      {evalReport && (
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%)',
-            border: '1px solid #a7f3d0',
-            borderLeft: '5px solid #10b981',
-            borderRadius: 'var(--radius-md)',
-            padding: '16px 20px',
-            marginBottom: '22px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '14px',
-          }}
-        >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <CheckCircleIcon size={18} style={{ color: '#059669' }} />
-              <strong style={{ fontSize: '14px', color: '#065f46' }}>
-                Statistical Recommendation: {evalReport.comparison.riskSummary.recommendation}
-              </strong>
-            </div>
-            <div style={{ fontSize: '12.5px', color: '#047857' }}>
-              Monte Carlo stochastic evaluation (95% CI): Expected realized cost savings of{' '}
-              <strong>${(evalReport.comparison.realizedExpectedSavingsVsActualCents / 100).toFixed(2)}</strong> [
-              ${((evalReport.comparison.realizedSavingsConfidenceInterval95?.lower95 ?? 0) / 100).toFixed(2)} – $
-              {((evalReport.comparison.realizedSavingsConfidenceInterval95?.upper95 ?? 0) / 100).toFixed(2)}] with 0.0% SLA breach risk.
-            </div>
-          </div>
+      {evalReport && (() => {
+        const recommendation = evalReport.comparison.riskSummary.recommendation;
+        const lower95 = evalReport.comparison.realizedSavingsConfidenceInterval95?.lower95 ?? 0;
+        const hasRisk =
+          recommendation.toUpperCase().includes('RISK') ||
+          recommendation.toUpperCase().includes('HOLD') ||
+          recommendation.toUpperCase().includes('WARNING') ||
+          lower95 <= 0;
 
-          <span className="status-pill active" style={{ fontSize: '11px', padding: '4px 12px' }}>
-            Algorithm Verified Feasible
-          </span>
-        </div>
-      )}
+        return (
+          <div
+            style={{
+              background: '#ffffff',
+              border: hasRisk ? '1px solid #fed7aa' : '1px solid #bbf7d0',
+              borderLeft: hasRisk ? '3px solid #f59e0b' : '3px solid #10b981',
+              borderRadius: 'var(--radius-md)',
+              padding: '16px 20px',
+              marginBottom: '22px',
+              boxShadow: 'var(--shadow-sm)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '14px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 'var(--radius-sm)',
+                  background: hasRisk ? '#fffbeb' : '#ecfdf5',
+                  border: hasRisk ? '1px solid #fde68a' : '1px solid #a7f3d0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: hasRisk ? '#d97706' : '#059669',
+                  flexShrink: 0,
+                  marginTop: '2px',
+                }}
+              >
+                {hasRisk ? <AlertCircleIcon size={16} /> : <CheckCircleIcon size={16} />}
+              </div>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                  <strong
+                    style={{
+                      fontSize: '13.5px',
+                      color: hasRisk ? '#92400e' : '#065f46',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Statistical Recommendation: {recommendation}
+                  </strong>
+                </div>
+                <div style={{ fontSize: '12px', color: hasRisk ? '#78350f' : '#047857' }}>
+                  Monte Carlo stochastic evaluation (95% CI): Expected realized cost savings of{' '}
+                  <strong>${(evalReport.comparison.realizedExpectedSavingsVsActualCents / 100).toFixed(2)}</strong> [
+                  ${((evalReport.comparison.realizedSavingsConfidenceInterval95?.lower95 ?? 0) / 100).toFixed(2)} – $
+                  {((evalReport.comparison.realizedSavingsConfidenceInterval95?.upper95 ?? 0) / 100).toFixed(2)}] with 0.0% SLA breach risk.
+                </div>
+              </div>
+            </div>
+
+            <span
+              className={hasRisk ? 'status-pill open' : 'status-pill active'}
+              style={{ fontSize: '11px', padding: '4px 10px' }}
+            >
+              {hasRisk ? 'Pilot Risk Detected · Safety Buffer Required' : 'Algorithm Verified Feasible · Pilot Approved'}
+            </span>
+          </div>
+        );
+      })()}
 
       {/* Side-by-Side Algorithm & Financial Comparison Table (EVAL-01) */}
       <section style={{ marginBottom: '24px' }}>

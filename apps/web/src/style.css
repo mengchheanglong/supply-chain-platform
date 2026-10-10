@@ -607,11 +607,41 @@ button.secondary:hover:not(:disabled) {
   border-color: var(--color-border-hover);
 }
 
-/* Forms & Inputs */
+/* Forms & Inputs — Disciplined Stripe/Vercel Grid & Stack Layout */
+.record-form {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px 20px;
+  align-items: start;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  letter-spacing: -0.1px;
+  width: 100%;
+}
+
+label input,
+label select,
+label textarea,
 input, select, textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
   font-family: inherit;
   font-size: 13px;
-  padding: 7px 11px;
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid #cbd5e1;
   background-color: #ffffff;
@@ -622,19 +652,107 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   border-color: #0f172a;
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
 }
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
   color: #94a3b8;
 }
 
-label {
-  display: block;
+label:has(input[type="checkbox"]),
+label:has(input[type="radio"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+}
+
+label:has(input[type="checkbox"]) input,
+label:has(input[type="radio"]) input {
+  width: auto;
+  margin: 0;
+}
+
+.record-form .field-full-width,
+.record-form label:has(textarea) {
+  grid-column: 1 / -1;
+}
+
+.form-action {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 6px 12px;
   font-size: 12px;
   font-weight: 500;
-  color: #475569;
-  margin-bottom: 4px;
+  background-color: #ffffff;
+  color: #0f172a;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-sm);
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #f8fafc;
+  border-color: var(--color-border-hover);
+}
+
+.pagination button:disabled {
+  opacity: 0.45;
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Stock Summary Strip */
+.stock-summary {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.stock-summary > div {
+  flex: 1;
+  min-width: 140px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stock-summary strong {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #0f172a;
+}
+
+.stock-summary span {
+  font-size: 11.5px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 /* Feedback & Empty States */

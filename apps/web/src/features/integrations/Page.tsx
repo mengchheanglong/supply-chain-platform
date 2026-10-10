@@ -3,6 +3,7 @@ import { api, ApiError } from '@supply-chain/api-client';
 import { sessionSignal, useSession } from '../../app/session';
 import { MasterPicker } from '../../shared/MasterPicker';
 import { useExchange, useExchangeCommand, type ExchangeCommand } from './queries';
+import { ExchangeIcon, RefreshCwIcon, ShieldCheckIcon, DatabaseIcon, LayersIcon } from '../../shared/icons';
 
 const template = 'record_id,facility_ref,sku_ref,unit,on_hand,reserved,observed_at\nobservation-1,warehouse-A,article-A,each,10,2,2026-01-01T00:00:00Z\n';
 
@@ -155,18 +156,43 @@ export default function Page() {
   return (
     <>
       <section>
-        <h2>Data exchange</h2>
-        <p>Validate external stock observations and export scoped operational records. Staging does not change stock, reservations or orders. These receipts are not approved planning snapshots.</p>
-        <button className="secondary" disabled={locked || mappings.isFetching || documents.isFetching || document.isFetching || snapshots.isFetching || snapshot.isFetching} onClick={refresh}>
-          Refresh exchange
-        </button>
+        <div className="section-head">
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <ExchangeIcon size={20} style={{ color: 'var(--color-primary)' }} />
+              <h2 style={{ margin: 0 }}>Data exchange</h2>
+            </div>
+            <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)' }}>
+              Validate external stock observations and export scoped operational records. Staging does not change stock, reservations or orders. These receipts are not approved planning snapshots.
+            </p>
+          </div>
+          <button className="secondary" disabled={locked || mappings.isFetching || documents.isFetching || document.isFetching || snapshots.isFetching || snapshot.isFetching} onClick={refresh}>
+            <RefreshCwIcon size={14} />
+            Refresh exchange
+          </button>
+        </div>
+
         {[mappings, documents, document, snapshots, snapshot].filter(query => query.isError).map((query, i) => (
           <p role="alert" className="error" key={i}>{query.error!.message}</p>
         ))}
-        <div className="record-form">
-          <label>Source system<input value={sourceSystem} maxLength={80} disabled={locked} onChange={event => setSource(event.target.value)} /></label>
-          <label>Event reference<input value={externalId} maxLength={160} disabled={locked} onChange={event => setExternal(event.target.value)} /></label>
+
+        <div className="workbench-card" style={{ marginBottom: '22px' }}>
+          <div style={{ marginBottom: '12px' }}>
+            <strong style={{ fontSize: '13.5px', color: 'var(--color-text-main)' }}>Transaction Identity & Scope</strong>
+            <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '2px' }}>
+              Enter a source system and distinct event reference. Every staging, mapping, snapshot and export command uses this identity.
+            </div>
+          </div>
+          <div className="record-form" style={{ padding: 0, border: 'none', boxShadow: 'none', margin: 0, background: 'transparent' }}>
+            <label>Source system
+              <input value={sourceSystem} maxLength={80} disabled={locked} onChange={event => setSource(event.target.value)} placeholder="e.g. erp-primary" />
+            </label>
+            <label>Event reference
+              <input value={externalId} maxLength={160} disabled={locked} onChange={event => setExternal(event.target.value)} placeholder="e.g. EVT-SNAP-2026-001" />
+            </label>
+          </div>
         </div>
+
         {localError && <p role="alert" className="error">{localError}</p>}
         {mutation.isError && (
           <div role="alert" className="error">
@@ -186,87 +212,117 @@ export default function Page() {
             )}
           </div>
         )}
-        {mutation.isSuccess && <p role="status">Operation recorded successfully.</p>}
+        {mutation.isSuccess && <p role="status" style={{ color: 'var(--color-success-text)', fontWeight: 600 }}>Operation recorded successfully.</p>}
       </section>
 
       {operator && (
-        <>
-          <section>
-            <h2>Create planning snapshot</h2>
-            <p>Generate an approved, immutable point-in-time planning snapshot capturing facilities, SKUs, inventory balances, and order demand.</p>
-            <form onSubmit={createSnapshot}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px', marginBottom: '28px' }}>
+          <div className="workbench-card">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <ShieldCheckIcon size={18} style={{ color: 'var(--color-primary)' }} />
+              <h2 style={{ margin: 0, fontSize: '15px' }}>Create planning snapshot</h2>
+            </div>
+            <p style={{ margin: '0 0 14px', fontSize: '12.5px', color: 'var(--color-text-muted)' }}>
+              Generate an approved, immutable point-in-time planning snapshot capturing facilities, SKUs, inventory balances, and order demand.
+            </p>
+            <form onSubmit={createSnapshot} style={{ display: 'flex', flexDirection: 'column', gap: '14px', flex: 1 }}>
               <label>Approval notes (optional)
                 <input value={notes} maxLength={500} disabled={locked} onChange={event => setNotes(event.target.value)} placeholder="e.g. Approved baseline for planning" />
               </label>
-              <div className="form-action">
+              <div className="form-action" style={{ marginTop: 'auto', paddingTop: '12px' }}>
                 <button disabled={locked}>Generate approved snapshot</button>
               </div>
             </form>
-            <small>Snapshots are append-only and cryptographically hashed. Operational tables are never modified.</small>
-          </section>
+            <small style={{ marginTop: '10px', display: 'block', fontSize: '11px', color: 'var(--color-text-faint)' }}>
+              Snapshots are append-only and cryptographically hashed. Operational tables are never modified.
+            </small>
+          </div>
 
-          <section>
-            <h2>Map external references</h2>
-            <form className="record-form" onSubmit={map}>
-              <label>Mapping type
-                <select value={entity} disabled={locked} onChange={event => { setEntity(event.target.value as 'facility' | 'sku'); setTarget(''); }}>
-                  <option value="facility">Facility</option>
-                  <option value="sku">SKU</option>
-                </select>
-              </label>
-              <label>External reference
-                <input required maxLength={160} disabled={locked} value={sourceExternalId} onChange={event => setSourceExternal(event.target.value)} />
-              </label>
+          <div className="workbench-card">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <LayersIcon size={18} style={{ color: 'var(--color-primary)' }} />
+              <h2 style={{ margin: 0, fontSize: '15px' }}>Map external references</h2>
+            </div>
+            <p style={{ margin: '0 0 14px', fontSize: '12.5px', color: 'var(--color-text-muted)' }}>
+              Mappings bind this source system's references to records in your organization.
+            </p>
+            <form onSubmit={map} style={{ display: 'flex', flexDirection: 'column', gap: '14px', flex: 1 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <label>Mapping type
+                  <select value={entity} disabled={locked} onChange={event => { setEntity(event.target.value as 'facility' | 'sku'); setTarget(''); }}>
+                    <option value="facility">Facility</option>
+                    <option value="sku">SKU</option>
+                  </select>
+                </label>
+                <label>External reference
+                  <input required maxLength={160} disabled={locked} value={sourceExternalId} onChange={event => setSourceExternal(event.target.value)} placeholder="e.g. EXT-REF-001" />
+                </label>
+              </div>
               <MasterPicker key={entity} session={session} kind={entity === 'facility' ? 'facilities' : 'skus'} value={targetId} disabled={locked} onSelect={setTarget} />
-              <div className="form-action"><button disabled={locked || !targetId}>Save source mapping</button></div>
+              <div className="form-action" style={{ marginTop: 'auto', paddingTop: '12px' }}>
+                <button disabled={locked || !targetId}>Save source mapping</button>
+              </div>
             </form>
-            <small>Mappings bind this source system's references to records in your organization.</small>
-          </section>
+            <small style={{ marginTop: '10px', display: 'block', fontSize: '11px', color: 'var(--color-text-faint)' }}>
+              Mappings bind this source system's references to records in your organization.
+            </small>
+          </div>
 
-          <section>
-            <h2>Validate stock CSV</h2>
-            <p>CSV v1 accepts up to 200 observations. Every reference needs a mapping; units and observed UTC times are required. Any issue rejects the whole file.</p>
+          <div className="workbench-card" style={{ gridColumn: '1 / -1' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <DatabaseIcon size={18} style={{ color: 'var(--color-primary)' }} />
+              <h2 style={{ margin: 0, fontSize: '15px' }}>Validate stock CSV</h2>
+            </div>
+            <p style={{ margin: '0 0 14px', fontSize: '12.5px', color: 'var(--color-text-muted)' }}>
+              CSV v1 accepts up to 200 observations. Every reference needs a mapping; units and observed UTC times are required. Any issue rejects the whole file.
+            </p>
             <form onSubmit={validate}>
-              <div className="record-form">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px', marginBottom: '14px' }}>
                 <label>CSV file<input type="file" accept=".csv,text/csv" disabled={locked} onChange={event => void load(event.target.files?.[0])} /></label>
                 <label>File name<input required value={fileName} maxLength={160} disabled={locked} onChange={event => setFileName(event.target.value)} /></label>
               </div>
-              <label>CSV content<textarea required rows={7} maxLength={40000} value={csv} disabled={locked} onChange={event => { fileGeneration.current++; setCsv(event.target.value); }} /></label>
-              <div className="pagination">
+              <label>CSV content<textarea required rows={6} maxLength={40000} value={csv} disabled={locked} onChange={event => { fileGeneration.current++; setCsv(event.target.value); }} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px' }} /></label>
+              <div className="pagination" style={{ marginTop: '14px', justifyContent: 'flex-start' }}>
                 <button type="button" className="secondary" disabled={locked} onClick={() => { fileGeneration.current++; setCsv(template); }}>Use CSV template</button>
                 <button disabled={locked || !csv}>Validate and stage</button>
               </div>
             </form>
-            <small>For a corrected file or revalidation after mapping changes, use a new event reference. Replays return the original report.</small>
-          </section>
-        </>
+            <small style={{ marginTop: '10px', display: 'block', fontSize: '11px', color: 'var(--color-text-faint)' }}>
+              For a corrected file or revalidation after mapping changes, use a new event reference. Replays return the original report.
+            </small>
+          </div>
+        </div>
       )}
 
-      <section>
-        <h2>Export operational CSV</h2>
-        <form className="record-form" onSubmit={exportPage}>
-          <label>Export resource
-            <select disabled={locked} value={resource} onChange={event => { setResource(event.target.value as typeof resource); setExportCursor(undefined); }}>
-              <option value="facilities">Facilities</option>
-              <option value="skus">SKUs</option>
-              <option value="stock">Selected stock balance</option>
-            </select>
-          </label>
-          {resource === 'stock' && (
-            <>
-              <MasterPicker session={session} kind="facilities" value={facilityId} disabled={locked} onSelect={setFacility} />
-              <MasterPicker session={session} kind="skus" value={skuId} disabled={locked} onSelect={setSku} />
-            </>
-          )}
-          <div className="form-action">
-            <button disabled={locked || (resource === 'stock' && (!facilityId || !skuId))}>Create export receipt</button>
+      <div className="workbench-card" style={{ marginBottom: '28px' }}>
+        <h2 style={{ margin: '0 0 4px', fontSize: '15px' }}>Export operational CSV</h2>
+        <p style={{ margin: '0 0 14px', fontSize: '12.5px', color: 'var(--color-text-muted)' }}>
+          Master-data pages contain up to 50 rows. Each receipt captures one page; several live pages do not form a point-in-time snapshot.
+        </p>
+        <form onSubmit={exportPage}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px', alignItems: 'end' }}>
+            <label>Export resource
+              <select disabled={locked} value={resource} onChange={event => { setResource(event.target.value as typeof resource); setExportCursor(undefined); }}>
+                <option value="facilities">Facilities</option>
+                <option value="skus">SKUs</option>
+                <option value="stock">Selected stock balance</option>
+              </select>
+            </label>
+            {resource === 'stock' && (
+              <>
+                <MasterPicker session={session} kind="facilities" value={facilityId} disabled={locked} onSelect={setFacility} />
+                <MasterPicker session={session} kind="skus" value={skuId} disabled={locked} onSelect={setSku} />
+              </>
+            )}
+            <div style={{ paddingBottom: '1px' }}>
+              <button disabled={locked || (resource === 'stock' && (!facilityId || !skuId))}>Create export receipt</button>
+            </div>
           </div>
         </form>
-        <p>Master-data pages contain up to 50 rows. Each receipt captures one page; several live pages do not form a point-in-time snapshot.</p>
         {exportCursor && (
-          <p>Next page is selected. Enter a new event reference to export it. <button className="secondary" disabled={locked} onClick={() => setExportCursor(undefined)}>Start from first page</button></p>
+          <p style={{ marginTop: '14px', fontSize: '12px' }}>Next page is selected. Enter a new event reference to export it. <button className="secondary" disabled={locked} onClick={() => setExportCursor(undefined)}>Start from first page</button></p>
         )}
-      </section>
+      </div>
 
       <section>
         <h2>Approved planning snapshots</h2>

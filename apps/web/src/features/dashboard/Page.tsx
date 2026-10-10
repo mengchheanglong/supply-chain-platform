@@ -327,12 +327,13 @@ export default function Page() {
       {openOrdersCount > 0 && (
         <div
           style={{
-            background: '#fffbeb',
-            border: '1px solid #fef3c7',
-            borderLeft: '4px solid #f59e0b',
+            background: '#ffffff',
+            border: '1px solid var(--color-border)',
+            borderLeft: '3px solid #f59e0b',
             borderRadius: 'var(--radius-md)',
             padding: '14px 20px',
             marginBottom: '20px',
+            boxShadow: 'var(--shadow-sm)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -340,19 +341,39 @@ export default function Page() {
             gap: '12px',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <ClockIcon size={18} style={{ color: '#d97706' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 'var(--radius-sm)',
+                background: '#fffbeb',
+                border: '1px solid #fef3c7',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#d97706',
+                flexShrink: 0,
+              }}
+            >
+              <ClockIcon size={16} />
+            </div>
             <div>
-              <strong style={{ color: '#92400e', fontSize: '13.5px' }}>
-                {openOrdersCount} Customer Demand Order(s) Awaiting Stock Allocation
-              </strong>
-              <div style={{ fontSize: '12px', color: '#b45309' }}>
-                Review order lines below and allocate stock from available warehouse inventory.
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <strong style={{ color: '#0f172a', fontSize: '13.5px', fontWeight: 600 }}>
+                  {openOrdersCount} Customer Demand {openOrdersCount === 1 ? 'Order' : 'Orders'} Awaiting Stock Allocation
+                </strong>
+                <span className="status-pill open" style={{ fontSize: '10.5px', padding: '1px 8px' }}>
+                  Attention Required
+                </span>
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '2px' }}>
+                Review order lines in the queue below and allocate stock from available warehouse inventory.
               </div>
             </div>
           </div>
           <button
-            style={{ padding: '6px 14px', fontSize: '12px', background: '#d97706' }}
+            style={{ padding: '7px 14px', fontSize: '12px' }}
             onClick={() => {
               setStateFilter('open');
               const firstOpen = orderItems.find((o) => o.state === 'open');
