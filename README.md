@@ -143,7 +143,7 @@ All business endpoints require a tenant-scoped Bearer token or authorized API Ke
 | `POST` | `/api/v1/inventory/reserve` | Operator | Idempotently places a temporary stock hold against available inventory |
 | `POST` | `/api/v1/inventory/release` | Operator | Releases an active stock hold back to available status |
 | `POST` | `/api/v1/inventory/consume` | Operator | Consumes a reserved stock hold upon shipment dispatch |
-| `GET` | `/api/v1/inventory/balance` | Reader | Computes real-time stock balances: $\text{available} = \text{on\_hand} - \text{reserved}$ |
+| `GET` | `/api/v1/inventory/balance` | Reader | Computes real-time stock balances: `available = on_hand - reserved` |
 | `GET` | `/api/v1/inventory/movements`| Reader | Retrieves chronological audit trail of all physical stock movements |
 
 ### 4. Demand Orders & Fulfillment Workflow
@@ -174,19 +174,13 @@ All business endpoints require a tenant-scoped Bearer token or authorized API Ke
 
 To eliminate phantom inventory and race conditions, the platform enforces strict double-entry ledger semantics:
 
-$$\text{Available Stock} = \text{On-Hand Stock} - \text{Active Reservations}$$
+> **Core Balance Invariant**: `Available Stock = On-Hand Stock − Active Reservations`
 
-```
-[Inbound Receipt] ──► +On-Hand (Movements Ledger)
-                             │
-                             ▼
-[Demand Order]    ──► +Reservation (Holds Stock, Available Decreases)
-                             │
-            ┌────────────────┴────────────────┐
-            ▼                                 ▼
-   [Order Cancelled]                 [Order Dispatched]
-   -Reservation                      -Reservation & -On-Hand
-   (Available Restored)              (Stock Consumed in Full)
+```mermaid
+flowchart TD
+  Receipt["📥 <b>Inbound Receipt</b><br/>+On-Hand Stock (Movements Ledger)"] --> Order["📋 <b>Demand Order Ingestion</b><br/>+Reservation Hold (Available Stock Decreases)"]
+  Order --> Cancel["❌ <b>Order Cancelled</b><br/>-Reservation Hold<br/><i>Available Stock Restored</i>"]
+  Order --> Dispatch["🚚 <b>Shipment Dispatched</b><br/>-Reservation Hold & -On-Hand Stock<br/><i>Physical Stock Consumed</i>"]
 ```
 
 - **No Floating-Point Arithmetic**: Quantities are represented as exact scaled strings and non-negative integers.
