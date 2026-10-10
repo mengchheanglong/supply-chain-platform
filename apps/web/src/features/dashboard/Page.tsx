@@ -211,12 +211,12 @@ export default function Page() {
       {/* Hero Mission Control Header */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #ffffff 0%, #f4fbf7 100%)',
+          background: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '24px 28px',
+          borderRadius: 'var(--radius-md)',
+          padding: '20px 24px',
           marginBottom: '20px',
-          boxShadow: 'var(--shadow-md)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>

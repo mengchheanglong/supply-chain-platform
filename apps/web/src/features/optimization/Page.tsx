@@ -73,12 +73,12 @@ export default function Page() {
       {/* Hero Header Strip */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #ffffff 0%, #f4fbf7 100%)',
+          background: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '22px 26px',
+          borderRadius: 'var(--radius-md)',
+          padding: '20px 24px',
           marginBottom: '20px',
-          boxShadow: 'var(--shadow-md)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>

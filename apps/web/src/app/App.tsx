@@ -102,7 +102,7 @@ export function App() {
           </div>
           <div>SC<span>OPS</span></div>
         </div>
-        <h2>Supply Chain<br />Operations Platform</h2>
+        <h2>Supply Chain Platform</h2>
         <p>Enterprise warehouse & distribution</p>
 
         <nav aria-label="Operations">
@@ -145,9 +145,8 @@ export function App() {
         </nav>
 
         <div className="scope">
-          <strong>Enterprise Foundation</strong><br />
-          PostGIS Multi-Tenant RLS<br />
-          Double-Entry Stock Ledger
+          <strong>PostGIS Multi-Tenant RLS</strong><br />
+          Double-entry stock ledger
         </div>
       </aside>
 
@@ -173,67 +172,18 @@ export function App() {
             <div className="tenant">
               <div>
                 <strong>
-                  <ShieldCheckIcon size={16} style={{ color: 'var(--color-accent)' }} />
+                  <ShieldCheckIcon size={14} style={{ color: 'var(--color-accent)' }} />
                   {session.actor.tenantName}
                 </strong>
                 <span>
-                  Role: <span style={{ textTransform: 'uppercase', fontWeight: 600, color: 'var(--color-primary)' }}>{session.actor.role}</span> · Timezone: {session.actor.timezone} · Tenant ID: {session.actor.tenantId.slice(0, 8)}…
+                  Role: <strong style={{ textTransform: 'uppercase', color: 'var(--color-text-main)' }}>{session.actor.role}</strong> · Timezone: {session.actor.timezone} · Tenant ID: {session.actor.tenantId.slice(0, 8)}…
                 </span>
               </div>
               <button className="secondary" onClick={disconnect}>
-                <LogOutIcon size={14} />
+                <LogOutIcon size={13} />
                 Disconnect
               </button>
             </div>
-
-            {/* Quick KPI Strip when inside sub-pages */}
-            {!isDashboard && (
-              <div className="kpi-grid">
-                <div className="kpi-card">
-                  <div className="kpi-card-head">
-                    <span className="kpi-card-title">Network Facilities</span>
-                    <div className="kpi-card-icon">
-                      <WarehouseIcon size={16} />
-                    </div>
-                  </div>
-                  <div className="kpi-card-value">4</div>
-                  <span className="kpi-card-desc">Hubs & regional depots</span>
-                </div>
-
-                <div className="kpi-card">
-                  <div className="kpi-card-head">
-                    <span className="kpi-card-title">Catalog SKUs</span>
-                    <div className="kpi-card-icon">
-                      <PackageIcon size={16} />
-                    </div>
-                  </div>
-                  <div className="kpi-card-value">4</div>
-                  <span className="kpi-card-desc">Tracked enterprise units</span>
-                </div>
-
-                <div className="kpi-card">
-                  <div className="kpi-card-head">
-                    <span className="kpi-card-title">Double-Entry Ledger</span>
-                    <div className="kpi-card-icon">
-                      <DatabaseIcon size={16} />
-                    </div>
-                  </div>
-                  <div className="kpi-card-value" style={{ color: 'var(--color-accent)' }}>100%</div>
-                  <span className="kpi-card-desc">Reconciled stock balance</span>
-                </div>
-
-                <div className="kpi-card">
-                  <div className="kpi-card-head">
-                    <span className="kpi-card-title">Security Isolation</span>
-                    <div className="kpi-card-icon">
-                      <ShieldCheckIcon size={16} />
-                    </div>
-                  </div>
-                  <div className="kpi-card-value" style={{ fontSize: '20px', color: 'var(--color-primary)' }}>RLS Active</div>
-                  <span className="kpi-card-desc">Tenant-scoped PostgreSQL</span>
-                </div>
-              </div>
-            )}
 
             <Suspense fallback={<p role="status">Loading workspace…</p>}>
               <Routes>
