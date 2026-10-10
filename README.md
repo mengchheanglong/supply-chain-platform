@@ -41,7 +41,7 @@ Related independent services:
 - logistics-sandbox — experiments against copied data; never the operational source of truth.
 - fleet-route-optimizer — VRPTW solver, constraint validator, financial cost-to-serve models, and scenario evaluation (OPT-01, EVAL-01).
 - ecommerce-storefront — commercial customer storefront; orders automatically bridge into fulfillment and double-entry stock allocation via SupplyChainBridgeService.
-- supply-chain-control-tower — standalone operations control tower and ecosystem mission control (port 3300).
+- supply-chain-control-tower — standalone operations control tower and ecosystem mission control (port 8300).
 
 ## Implemented foundation
 
