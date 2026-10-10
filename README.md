@@ -41,7 +41,7 @@ Related independent services:
 - logistics-sandbox — experiments against copied data; never the operational source of truth.
 - distribution-intelligence — VRPTW solver, constraint validator, financial cost-to-serve models, and scenario evaluation (OPT-01, EVAL-01).
 - ecommerce-hive-nosql — commercial customer storefront; orders automatically bridge into fulfillment and double-entry stock allocation via SupplyChainBridgeService.
-- platform-admin — standalone ecosystem administration control plane (port 3300).
+- supply-chain-control-tower — standalone operations control tower and ecosystem mission control (port 3300).
 
 ## Implemented foundation
 
